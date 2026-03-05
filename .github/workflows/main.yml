@@ -90,8 +90,13 @@ jobs:
           APP="$BASE/ticbcs2026-admin-0.0.1-SNAPSHOT.jar"
           LOG="$BASE/output.log"
           BAK="$BASE/ticbcs2026-admin-0.0.1-SNAPSHOT.jar.bak"
-          ls -lh "$SRC"
-          mv "$SRC" "$NEW"
+          if [ -f "$SRC" ]; then
+              echo "偵測到新上傳的檔案，進行搬移..."
+              ls -lh "$SRC"
+              mv "$SRC" "$NEW"
+          else
+              echo "未在 $SRC 找到檔案，跳過搬移步驟 (可能是初次部署或路徑變更)"
+          fi
 
                # 只抓指定 JAR 的 PID
           PIDS=$(ps aux | grep '[j]ava' | grep -v grep | grep "ticbcs2026-admin-0.0.1-SNAPSHOT.jar" | awk '{print $2}')
