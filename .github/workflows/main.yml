@@ -56,9 +56,9 @@ jobs:
         JAR_PATTERN="ticbcs2026-admin-0.0.1-SNAPSHOT*.jar"
         
         # 檢查 target/ 目錄下是否有符合模式的 JAR 檔
-        if [ -f target/${JAR_PATTERN} ]; then
+        if [ -f ticbcs2026-admin/target/${JAR_PATTERN} ]; then
           echo "JAR 檔案已成功生成並存在於 target/ 目錄。"
-          ls -l target/ | grep "${JAR_PATTERN}"
+          ls -l ticbcs2026-admin/target/ | grep "${JAR_PATTERN}"
         else
           echo "錯誤：找不到 JAR 檔案 target/${JAR_PATTERN}。"
           # 使用 exit 1 強制工作流程失敗，避免執行後續的部署步驟
@@ -70,7 +70,7 @@ jobs:
         host: ${{ secrets.GCP_VM_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "target/ticbcs2026-admin-0.0.1-SNAPSHOT.jar"
+        source: "ticbcs2026-admin/target/ticbcs2026-admin-0.0.1-SNAPSHOT.jar"
         target: "/home/user/back-end"
 
     
