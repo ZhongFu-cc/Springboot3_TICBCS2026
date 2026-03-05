@@ -19,13 +19,6 @@ spring:
     async:
       # 設置為30分鐘，這邊1800000是毫秒，此為異步Controller 任務的處理超時時間
       request-timeout: 1800000
-  profiles:
-    #  預設還是會先讀取application.yml,但可透過spring.profiles.active,來觸發外部配置,達到多環境
-    #  激活外部配置 application-*
-    #  如果外部配置的key和 application.yml重複, 外部的配置會覆蓋內部
-    #  後續打成Jar包,執行時可以添加java -jar xxx.jar --spring.profiles.active=prod 代表啟用prod配置文件
-    #  這邊預設啟用dev開發環境的配置文件
-    active: dev
   # i18n 語言,根據瀏覽器傳來的accept-language決定使用哪個語言
   messages:
     basename: messages              # 對應 classpath 下的 messages_*.properties
