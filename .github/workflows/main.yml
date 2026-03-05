@@ -37,11 +37,11 @@ jobs:
         MERCHANT_KEY: ${{ secrets.MERCHANT_KEY }}
 
       run: |
-        envsubst < src/main/resources/application-prod.yml > src/main/resources/application-prod.yml.tmp 
-        mv src/main/resources/application-prod.yml.tmp src/main/resources/application-prod.yml
+        envsubst < ticbcs2026-admin/src/main/resources/application-prod.yml > ticbcs2026-admin/src/main/resources/application-prod.yml.tmp 
+        mv ticbcs2026-admin/src/main/resources/application-prod.yml.tmp ticbcs2026-admin/src/main/resources/application-prod.yml
         
-        envsubst < src/main/resources/payment_conf.xml > src/main/resources/payment_conf.xml.tmp
-        mv src/main/resources/payment_conf.xml.tmp src/main/resources/payment_conf.xml
+        envsubst < ticbcs2026-admin/src/main/resources/payment_conf.xml > ticbcs2026-admin/src/main/resources/payment_conf.xml.tmp
+        mv ticbcs2026-admin/src/main/resources/payment_conf.xml.tmp ticbcs2026-admin/src/main/resources/payment_conf.xml
 
 
     - name:  使用 Maven 打包專案 (生成 JAR 檔)
