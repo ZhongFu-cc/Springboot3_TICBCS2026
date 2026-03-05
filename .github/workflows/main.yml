@@ -72,6 +72,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "ticbcs2026-admin/target/ticbcs2026-admin-0.0.1-SNAPSHOT.jar"
         target: "/home/user/back-end"
+        strip_components: 2
 
     
     - name: 部屬至 server
