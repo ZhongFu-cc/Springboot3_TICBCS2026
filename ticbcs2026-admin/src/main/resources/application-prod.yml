@@ -36,7 +36,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     # 配置URL,mysql8.0剛出時不配置?serverTimezone=Asia/Taipei,會報啟動錯誤
     # 現在好像解決了
-    url: jdbc:mariadb://localhost:3306/ticbcs2026_international_conferenct?rewriteBatchedStatements=true
+    url: jdbc:mariadb://localhost:3306/ticbcs2026_international_conference?rewriteBatchedStatements=true
     # 配置連接用戶
     username: ${DB_USER}
     # 配置用戶密碼
