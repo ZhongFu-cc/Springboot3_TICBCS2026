@@ -93,10 +93,13 @@ jobs:
           BAK="$BASE/ticbcs2026-admin-0.0.1-SNAPSHOT.jar.bak"
           if [ -f "$SRC" ]; then
               echo "偵測到新上傳的檔案，進行搬移..."
-              ls -lh "$SRC"
-              mv "$SRC" "$NEW"
-          else
-              echo "未在 $SRC 找到檔案，跳過搬移步驟 (可能是初次部署或路徑變更)"
+              [ -f "$APP" ] && mv "$APP" "$BAK"
+              # 將新上傳的直接變成正式版
+              mv "$SRC" "$APP"
+          elif [ -f "$NEW" ]; then
+              echo "偵測到待處理檔案 (.new)，準備處理..."
+              [ -f "$APP" ] && mv "$APP" "$BAK"
+              mv "$NEW" "$APP"
           fi
 
                # 只抓指定 JAR 的 PID
@@ -112,30 +115,11 @@ jobs:
           fi
           
           echo " 檢查檔案是否存在"
-          if [ ! -f "$NEW" ]; then
-            echo " 找不到 $NEW"
-            exit 1
+          echo "檢查最終執行檔 $APP"
+          if [ ! -f "$APP" ]; then
+              echo "❌ 錯誤：找不到可執行的 JAR 檔案，部署中止。"
+              exit 1
           fi
-          
-          echo "檔案資訊"
-          ls -lh "$NEW"
-          ls -lg "$APP"
-
-          echo "檔案大小（bytes）"
-          stat -c "%s" "$NEW"
-          stat -c "%s" "$APP"
-
-          echo "SHA256 checksum"
-          sha256sum "$NEW"
-
-          echo "備份舊版本"
-          [ -f "$APP" ] && mv "$APP" "$BAK"
-
-          echo "啟用新版本"
-          mv "$NEW" "$APP"
-
-          sha256sum /home/user/back-end/ticbcs2026-admin-0.0.1-SNAPSHOT.jar
-          sha256sum /home/user/back-end/ticbcs2026-admin-0.0.1-SNAPSHOT.jar.bak
 
 
           echo "新 JAR 已成功上傳（尚未影響任何服務）"
