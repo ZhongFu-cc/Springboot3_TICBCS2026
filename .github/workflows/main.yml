@@ -48,7 +48,7 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: 確認 target
-      run: jar tf target/ticbcs2026-admin-0.0.1-SNAPSHOT.jar | grep application-prod
+      run: jar tf ticbcs2026-admin/target/ticbcs2026-admin-0.0.1-SNAPSHOT.jar | grep application-prod
       
     - name:  檢查 JAR 檔案是否存在
       run: |
