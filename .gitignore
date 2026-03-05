@@ -34,9 +34,9 @@ build/
 
 # Ignore all environment-specific configs
 **/src/main/resources/application.yml
-**/src/main/resources/application-*.yml
-**/src/main/resources/application-*.properties
+**/src/main/resources/application-dev.yml
+#**/src/main/resources/application-*.properties
 
-**/src/main/resources/payment_conf.xml
+#**/src/main/resources/payment_conf.xml
 
 bin/
