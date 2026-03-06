@@ -15,7 +15,7 @@ public class PutMemberForAdminDTO {
 	@Schema(description = "同時作為護照號碼 和 台灣身分證字號使用")
 	private String idCard;
 
-	@NotBlank
+//	@NotBlank
 	@Schema(description = "頭銜 - 前墜詞")
 	private String title;
 

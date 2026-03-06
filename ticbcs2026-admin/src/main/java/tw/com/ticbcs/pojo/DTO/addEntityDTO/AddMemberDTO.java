@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public class AddMemberDTO {
 
-	@NotBlank
+//	@NotBlank
 	@Schema(description = "同時作為護照號碼 和 台灣身分證字號使用")
 	private String idCard;
 
-	@NotBlank
+//	@NotBlank
 	@Schema(description = "頭銜 - 前墜詞")
 	private String title;
 
@@ -33,7 +33,7 @@ public class AddMemberDTO {
 	@Schema(description = "E-Mail")
 	private String email;
 
-	@NotBlank
+//	@NotBlank
 	@Schema(description = "密碼")
 	private String password;
 
@@ -49,7 +49,6 @@ public class AddMemberDTO {
 	private Integer category;
 
 	@Schema(description = "會員資格的身份補充")
-	@TableField("category_extra")
 	private String categoryExtra;
 
 	@NotBlank
