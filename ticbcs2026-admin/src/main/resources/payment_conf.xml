@@ -15,7 +15,7 @@
         <!-- 這個是使用仲阜的 -->
         <MInfo name="Production_Account">
             <MerchantID><![CDATA[${MERCHANT_ID}]]></MerchantID>
-            <HashKey><![CDATA[${PAYMENT_KEY}}]]></HashKey>
+            <HashKey><![CDATA[${MERCHANT_KEY}}]]></HashKey>
             <HashIV>WnIiVprtCtfaqHlD</HashIV>
         </MInfo>
         <!-- 這個是測試用的 -->
