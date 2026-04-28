@@ -18,6 +18,7 @@ import tw.com.ticbcs.helper.TagAssignmentHelper;
 import tw.com.ticbcs.pojo.BO.MemberExcelRaw;
 import tw.com.ticbcs.pojo.VO.MemberOrderVO;
 import tw.com.ticbcs.pojo.VO.MemberTagVO;
+import tw.com.ticbcs.pojo.VO.MemberVO;
 import tw.com.ticbcs.pojo.entity.Attendees;
 import tw.com.ticbcs.pojo.entity.Member;
 import tw.com.ticbcs.pojo.entity.Orders;
@@ -46,6 +47,24 @@ public class MemberOrderManager {
 
 	// --------------------------- 查詢相關 ---------------------------------------
 
+	/**
+	 * 拿到帶有註冊費繳費狀態的VO對象
+	 * 
+	 * @param memberId
+	 * @return
+	 */
+	public MemberVO getMemberVO(Long memberId) {
+
+		Member member = memberService.getMember(memberId);
+		MemberVO vo = memberConvert.entityToVO(member);
+
+		Orders registrationOrder = ordersService.getRegistrationOrderByMemberId(memberId);
+		vo.setStatus(registrationOrder.getStatus());
+		return vo;
+
+	}
+
+	
 	/**
 	 * 獲得訂單狀態的會員人數
 	 * 

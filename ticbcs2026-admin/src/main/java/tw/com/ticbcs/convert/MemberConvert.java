@@ -12,6 +12,7 @@ import tw.com.ticbcs.pojo.BO.MemberExcelRaw;
 import tw.com.ticbcs.pojo.DTO.AddGroupMemberDTO;
 import tw.com.ticbcs.pojo.DTO.AddMemberForAdminDTO;
 import tw.com.ticbcs.pojo.DTO.addEntityDTO.AddMemberDTO;
+import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberDTO;
 import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberForAdminDTO;
 import tw.com.ticbcs.pojo.VO.MemberOrderVO;
 import tw.com.ticbcs.pojo.VO.MemberTagVO;
@@ -28,7 +29,7 @@ public interface MemberConvert {
 
 	Member forAdminAddDTOToEntity(AddMemberForAdminDTO addMemberForAdminDTO);
 
-//	Member putDTOToEntity(PutMemberDTO putMemberDTO);
+	Member putDTOToEntity(PutMemberDTO putMemberDTO);
 	
 	Member putForAdminDTOToEntity(PutMemberForAdminDTO putMemberForAdminDTO);
 
