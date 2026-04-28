@@ -29,6 +29,7 @@ import tw.com.ticbcs.convert.MemberConvert;
 import tw.com.ticbcs.enums.OrderStatusEnum;
 import tw.com.ticbcs.exception.AccountPasswordWrongException;
 import tw.com.ticbcs.exception.ForgetPasswordException;
+import tw.com.ticbcs.exception.MemberException;
 import tw.com.ticbcs.exception.RegisteredAlreadyExistsException;
 import tw.com.ticbcs.helper.MessageHelper;
 import tw.com.ticbcs.mapper.MemberMapper;
@@ -37,6 +38,7 @@ import tw.com.ticbcs.pojo.DTO.AddMemberForAdminDTO;
 import tw.com.ticbcs.pojo.DTO.MemberLoginInfo;
 import tw.com.ticbcs.pojo.DTO.WalkInRegistrationDTO;
 import tw.com.ticbcs.pojo.DTO.addEntityDTO.AddMemberDTO;
+import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberDTO;
 import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberForAdminDTO;
 import tw.com.ticbcs.pojo.VO.MemberOrderVO;
 import tw.com.ticbcs.pojo.VO.MemberTagVO;
@@ -45,6 +47,7 @@ import tw.com.ticbcs.pojo.entity.Member;
 import tw.com.ticbcs.pojo.entity.Orders;
 import tw.com.ticbcs.saToken.StpKit;
 import tw.com.ticbcs.service.MemberService;
+import tw.com.ticbcs.utils.CountryUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -384,11 +387,50 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		return member;
 	};
 
-	//	@Override
-	//	public void updateMember(PutMemberDTO putMemberDTO) {
-	//		Member member = memberConvert.putDTOToEntity(putMemberDTO);
-	//		baseMapper.updateById(member);
-	//	}
+	@Override
+	public void updateMember(PutMemberDTO putMemberDTO) {
+		Member newMemberInfo = memberConvert.putDTOToEntity(putMemberDTO);
+		Member oldMemberInfo = this.getMember(newMemberInfo.getMemberId());
+
+		// 抽出這次更新時的國籍
+		String oldMemberCountry = CountryUtil.getTaiwanOrForeign(oldMemberInfo.getCountry());
+		String newMemberCountry = CountryUtil.getTaiwanOrForeign(newMemberInfo.getCountry());
+
+		// 如果國籍有變更 國外=>台灣 or 台灣=>國外 則拒絕變更
+		if (!oldMemberCountry.equals(newMemberCountry)) {
+			throw new MemberException("Nationality cannot be changed between domestic and foreign statuses.");
+		}
+
+		String oldMemberIdCard = oldMemberInfo.getIdCard();
+		String newMemberIdCard = newMemberInfo.getIdCard();
+
+		System.out.println("舊ID_Card: " + oldMemberIdCard);
+		System.out.println("新ID_Card: " + newMemberIdCard);
+
+		// 台灣人註冊
+		if (CountryUtil.isNational(newMemberCountry)) {
+			// idCard有傳值，且跟舊資料不一致，idCard不許修改,因為這代表帳號
+			if (newMemberIdCard != null && !oldMemberIdCard.equals(newMemberIdCard)) {
+				throw new MemberException("身分證不允許更新，如需更新請洽工作人員");
+			}
+		}
+
+		if (newMemberInfo.getIdCard() != null) {
+			// 判斷要更新的身分證，是否已被註冊
+			LambdaQueryWrapper<Member> idCardQueryWrapper = new LambdaQueryWrapper<>();
+			idCardQueryWrapper.eq(Member::getIdCard, newMemberInfo.getIdCard());
+			Long idCardCount = baseMapper.selectCount(idCardQueryWrapper);
+
+			if (idCardCount > 0) {
+				throw new RegisteredAlreadyExistsException(
+						messageHelper.get(I18nMessageKey.Registration.Auth.ID_CARD_REGISTERED));
+			}
+		}
+
+		// 如果前述條件都通過,進行更新
+		baseMapper.updateById(newMemberInfo);
+
+	}
 
 	@Override
 	public void updateMemberForAdmin(PutMemberForAdminDTO putMemberForAdminDTO) {
