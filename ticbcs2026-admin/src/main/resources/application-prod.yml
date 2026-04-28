@@ -69,11 +69,12 @@ spring:
         # !!! 关键配置 !!!
         # 指向您的 MinIO 服务地址和 API 端口 (默认通常是 9000)
         endpoint: http://localhost:9000
-        bucketName: ${MINIO_BUCKET_NAME}
+        bucketName: ticbcs
 
           # MinIO 强制使用 Path Style 路径，这通常是 S3 兼容服务所需要的
           # 例如：http://ip:port/bucket-name/object-key
-          #        force-path-style: true
+        force-path-style: true
+        path-style-access-enabled: true
 
           # 如果您的 MinIO 是 HTTP 协议，或者您不想用 SSL，建议设置：
           #        custom-http-client-configuration:
@@ -210,7 +211,7 @@ minio:
   #minio服務所在地址,這個指的是server不是控制台
   endpoint: http://localhost:9000
   #預設儲存桶名稱,這是為了避免上傳時沒選定Bucket造成錯誤
-  bucketName: ${MINIO_BUCKET_NAME}
+  bucketName: ticbcs
   #訪問的key,預設是帳號,除非有去特別設置Access key
   accessKey: ${MINIO_ACCESS_KEY}
   #訪問的密鑰,預設是密碼,除非有去特別設置Access key
