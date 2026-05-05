@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import lombok.RequiredArgsConstructor;
 import tw.com.ticbcs.pojo.DTO.EmailBodyContent;
-import tw.com.ticbcs.pojo.DTO.MemberLoginInfo;
+import tw.com.ticbcs.pojo.DTO.MemberEmailLogin;
+import tw.com.ticbcs.pojo.DTO.MemberLoginDTO;
 import tw.com.ticbcs.pojo.entity.Member;
 import tw.com.ticbcs.service.AsyncService;
 import tw.com.ticbcs.service.MemberService;
@@ -20,15 +21,34 @@ public class MemberAuthManager {
 	private final AsyncService asyncService;
 
 	/**
-	 * 會員登入
+	 * 會員登入 - Email & Password
 	 * 
-	 * @param memberLoginInfo
+	 * @param memberEmailLogin
 	 * @return
 	 */
-	public SaTokenInfo login(MemberLoginInfo memberLoginInfo) {
-		return memberService.login(memberLoginInfo);
+	public SaTokenInfo login(MemberEmailLogin memberEmailLogin) {
+		return memberService.login(memberEmailLogin);
 	}
-
+	
+	/**
+	 * 「外國人」登入 - Email & Password 綁定國籍「非」台灣 
+	 * 
+	 * @param memberLoginDTO
+	 * @return
+	 */
+	public SaTokenInfo foreignLogin(MemberLoginDTO memberLoginDTO) {
+		return memberService.foreignLogin(memberLoginDTO);
+	}
+	
+	/**
+	 * 「本國人」登入 - IdCard & Password 綁定國籍 台灣 
+	 * 
+	 * @param memberLoginDTO
+	 * @return
+	 */
+	public SaTokenInfo localLogin(MemberLoginDTO memberLoginDTO) {
+		return memberService.localLogin(memberLoginDTO);
+	}
 	/**
 	 * 會員登出
 	 * 
