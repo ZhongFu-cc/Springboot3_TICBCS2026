@@ -11,7 +11,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import tw.com.ticbcs.pojo.DTO.AddGroupMemberDTO;
 import tw.com.ticbcs.pojo.DTO.AddMemberForAdminDTO;
-import tw.com.ticbcs.pojo.DTO.MemberLoginInfo;
+import tw.com.ticbcs.pojo.DTO.MemberEmailLogin;
+import tw.com.ticbcs.pojo.DTO.MemberLoginDTO;
 import tw.com.ticbcs.pojo.DTO.WalkInRegistrationDTO;
 import tw.com.ticbcs.pojo.DTO.addEntityDTO.AddMemberDTO;
 import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberDTO;
@@ -178,12 +179,28 @@ public interface MemberService extends IService<Member> {
 	SaTokenInfo login(Member member);
 
 	/**
-	 * 會員登入
+	 * 會員登入 - Email & Password
 	 * 
-	 * @param memberLoginInfo
+	 * @param memberEmailLogin
 	 * @return
 	 */
-	SaTokenInfo login(MemberLoginInfo memberLoginInfo);
+	SaTokenInfo login(MemberEmailLogin memberEmailLogin);
+	
+	/**
+	 * 「外國人」登入 - Email & Password 綁定國籍「非」台灣 
+	 * 
+	 * @param memberLoginDTO
+	 * @return
+	 */
+	SaTokenInfo foreignLogin(MemberLoginDTO memberLoginDTO);
+	
+	/**
+	 * 「本國人」登入 - IdCard & Password 綁定國籍 台灣 
+	 * 
+	 * @param memberLoginDTO
+	 * @return
+	 */
+	SaTokenInfo localLogin(MemberLoginDTO memberLoginDTO);
 
 	/**
 	 * 會員登出

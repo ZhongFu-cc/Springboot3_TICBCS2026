@@ -35,7 +35,8 @@ import tw.com.ticbcs.helper.MessageHelper;
 import tw.com.ticbcs.mapper.MemberMapper;
 import tw.com.ticbcs.pojo.DTO.AddGroupMemberDTO;
 import tw.com.ticbcs.pojo.DTO.AddMemberForAdminDTO;
-import tw.com.ticbcs.pojo.DTO.MemberLoginInfo;
+import tw.com.ticbcs.pojo.DTO.MemberEmailLogin;
+import tw.com.ticbcs.pojo.DTO.MemberLoginDTO;
 import tw.com.ticbcs.pojo.DTO.WalkInRegistrationDTO;
 import tw.com.ticbcs.pojo.DTO.addEntityDTO.AddMemberDTO;
 import tw.com.ticbcs.pojo.DTO.putEntityDTO.PutMemberDTO;
@@ -463,9 +464,25 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		SaTokenInfo tokenInfo = StpKit.MEMBER.getTokenInfo();
 		return tokenInfo;
 	}
+	
+	/**
+	 * 透過Member資訊,返回TokenInfo
+	 * 
+	 * @param member
+	 * @return
+	 */
+	private SaTokenInfo returnSaTokenInfo(Member member) {
+		// 之後應該要以這個會員ID 產生Token 回傳前端，讓他直接進入登入狀態
+		StpKit.MEMBER.login(member.getMemberId());
+		// 登入後才能取得session
+		SaSession session = StpKit.MEMBER.getSession();
+		// 並對此token 設置會員的緩存資料
+		session.set(MEMBER_CACHE_INFO_KEY, member);
+		return StpKit.MEMBER.getTokenInfo();
+	}
 
 	@Override
-	public SaTokenInfo login(MemberLoginInfo memberLoginInfo) {
+	public SaTokenInfo login(MemberEmailLogin memberLoginInfo) {
 		LambdaQueryWrapper<Member> memberQueryWrapper = new LambdaQueryWrapper<>();
 		memberQueryWrapper.eq(Member::getEmail, memberLoginInfo.getEmail())
 				.eq(Member::getPassword, memberLoginInfo.getPassword());
@@ -473,16 +490,52 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 		Member member = baseMapper.selectOne(memberQueryWrapper);
 
 		if (member != null) {
-			// 之後應該要以這個會員ID 產生Token 回傳前端，讓他直接進入登入狀態
-			StpKit.MEMBER.login(member.getMemberId());
+			return this.returnSaTokenInfo(member);
+		}
 
-			// 登入後才能取得session
-			SaSession session = StpKit.MEMBER.getSession();
-			// 並對此token 設置會員的緩存資料
-			session.set(MEMBER_CACHE_INFO_KEY, member);
-			SaTokenInfo tokenInfo = StpKit.MEMBER.getTokenInfo();
+		// 如果 member為null , 則直接拋出異常
+		throw new AccountPasswordWrongException(messageHelper.get(I18nMessageKey.Registration.Auth.WRONG_ACCOUNT));
 
-			return tokenInfo;
+	}
+
+	@Override
+	public SaTokenInfo foreignLogin(MemberLoginDTO memberLoginDTO) {
+
+		// 獲得本國國籍 <Taiwan>
+		String national = CountryUtil.getHomeCountry();
+
+		// 除了帳號和密碼，額外判斷國家不屬於 台灣
+		LambdaQueryWrapper<Member> memberQueryWrapper = new LambdaQueryWrapper<>();
+		memberQueryWrapper.eq(Member::getEmail, memberLoginDTO.getAccount())
+				.eq(Member::getPassword, memberLoginDTO.getPassword())
+				.ne(Member::getCountry, national);
+
+		Member member = baseMapper.selectOne(memberQueryWrapper);
+
+		if (member != null) {
+			return this.returnSaTokenInfo(member);
+		}
+
+		// 如果 member為null , 則直接拋出異常
+		throw new AccountPasswordWrongException(messageHelper.get(I18nMessageKey.Registration.Auth.WRONG_ACCOUNT));
+
+	}
+
+	@Override
+	public SaTokenInfo localLogin(MemberLoginDTO memberLoginDTO) {
+		// 獲得本國國籍 <Taiwan>
+		String national = CountryUtil.getHomeCountry();
+
+		// 除了帳號和密碼，額外判斷國家屬於 台灣
+		LambdaQueryWrapper<Member> memberQueryWrapper = new LambdaQueryWrapper<>();
+		memberQueryWrapper.eq(Member::getIdCard, memberLoginDTO.getAccount())
+				.eq(Member::getPassword, memberLoginDTO.getPassword())
+				.eq(Member::getCountry, national);
+
+		Member member = baseMapper.selectOne(memberQueryWrapper);
+
+		if (member != null) {
+			return this.returnSaTokenInfo(member);
 		}
 
 		// 如果 member為null , 則直接拋出異常
